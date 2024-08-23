@@ -1,0 +1,64 @@
+{
+  "questions": [
+    "What is Generative AI?",
+    "Which of the following is a common application of Generative AI?",
+    "What technique is often used by Generative AI models to create new content?",
+    "Which of the following is a famous Generative AI model developed by OpenAI?",
+    "How does Generative AI differ from traditional AI?",
+    "What is one challenge associated with Generative AI?",
+    "Which of the following fields has NOT seen significant use of Generative AI?",
+    "What type of data is commonly used to train Generative AI models?",
+    "Which of the following is a common evaluation metric for Generative AI models?",
+    "How can Generative AI be used in creative industries?"
+  ],
+  "options": [
+    [
+      "A type of AI that generates content such as text, images, or music based on input data.",
+      "An AI that only analyzes data but doesn’t generate any output.",
+      "AI that can only perform pre-programmed tasks without learning from data.",
+      "AI that operates hardware devices like robots."
+    ],
+    [
+      "Predicting stock market trends.",
+      "Generating realistic images from text descriptions.",
+      "Sorting emails into folders.",
+      "Managing network traffic."
+    ],
+    [
+      "Reinforcement learning.",
+      "Supervised learning.",
+      "Generative adversarial networks (GANs).",
+      "Clustering algorithms."
+    ],
+    ["GPT-3.", "BERT.", "ResNet.", "VGGNet."],
+    [
+      "Generative AI creates content based on patterns learned from data, while traditional AI focuses on pre-defined tasks.",
+      "Generative AI only works with structured data, while traditional AI can work with unstructured data.",
+      "Generative AI does not require any data for training, while traditional AI relies heavily on data.",
+      "Generative AI is always supervised, while traditional AI can be either supervised or unsupervised."
+    ],
+    [
+      "Ensuring the generated content is always accurate and factual.",
+      "Avoiding overfitting the model to the training data.",
+      "Balancing between data diversity and model complexity.",
+      "Ensuring the generated content is free from any bias."
+    ],
+    ["Healthcare.", "Finance.", "Automotive.", "Agriculture."],
+    ["Text data.", "Image data.", "Audio data.", "Manual data entry."],
+    ["Precision.", "Recall.", "Fidelity.", "AUC-ROC."],
+    [
+      "Generating new music tracks.",
+      "Creating realistic virtual characters.",
+      "Designing marketing materials.",
+      "Automating customer service responses."
+    ]
+  ],
+  "Correct!": "Correct!",
+  "Incorrect!": "Incorrect!",
+  "Question": "Question",
+  "of": "of",
+  "score": "Score",
+  "quizCompleted": "Quiz Completed!",
+  "restartQuiz": "Restart Quiz",
+  "level": "Your level is {{level}}"
+}

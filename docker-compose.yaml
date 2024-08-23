@@ -1,0 +1,10 @@
+version: '3'
+services:
+  aapico-ai:
+    pull_policy: build
+    build:
+      dockerfile: ./Dockerfile
+      no_cache: true
+    image: aapico-ai:0.0.1
+    ports:
+      - 8087:3000

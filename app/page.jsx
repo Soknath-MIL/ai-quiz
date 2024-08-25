@@ -72,11 +72,11 @@ const QuizPage = () => {
                     onClick={() => handlePush("workshop")}>
                     Workshop
                   </button>
-                  <button
+                  {/* <button
                     className='bg-[#010029] text-white py-4 px-8 text-md font-bold rounded-xl relative before:block before:w-full before:h-full before:absolute before:top-0 before:left-0 before:bg-gradient-to-br before:from-purple-500 before:to-indigo-500 before:-z-10 before:scale-105 before:rounded-xl hover:z-0 hover:shadow-xl hover:shadow-purple-600 hover:text-black transition-all ease-in-out w-full uppercase'
                     onClick={() => handlePush("dashboard")}>
                     Dashboard
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ) : (

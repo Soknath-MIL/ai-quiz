@@ -1,229 +1,119 @@
-'use client'
-
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { GoArrowUp } from "react-icons/go";
-import { ImUser } from "react-icons/im";
-import { BsRobot } from "react-icons/bs";
-import { GrRefresh } from "react-icons/gr";
-import {Button} from "@nextui-org/react";
-import Image  from 'next/image';
+"use client";
+import React, { useEffect, useState } from "react";
+import "./i18n";
+import MatrixRainingCode from "./bg";
 import { useRouter } from "next/navigation";
-import { chatlogs, getDataAI } from "@/services/api";
-import { FaStop } from "react-icons/fa";
-import { motion } from "framer-motion"
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import { RiRobot2Line } from "react-icons/ri";
-const Home = () => {
-  dayjs.extend(utc);
-  dayjs.extend(timezone); 
-  const [prompt, setPrompt] = useState([]);
-  const [isLoading , setIsLoading ] = useState(true);
-  const [userInput, setUserInput] = useState('');
+import { getCookieLogin, setCookieLogin } from "@/services/cookie";
+import { Backdrop } from "@mui/material";
+import toast from "react-hot-toast";
+
+const QuizPage = () => {
   const router = useRouter();
-  const chatDivRef = useRef(null);
-  const timestamp = dayjs().tz('Asia/Bangkok');
+  const [userID, setUserID] = useState();
+  const [tricker, setTricker] = useState(false);
 
-
-  const handleSubmit = async (e) => {
-    setIsLoading(false)
-    const _timestamp = timestamp.format()
-    const newMessages = [...prompt, { role: 'user', content: userInput }];
-    setPrompt(newMessages);
-    await chatlogs(userInput,_timestamp)
-    const data = await getDataAI (userInput)
-    const result = data?.data[0]?.message;
-    newMessages.push({ role: 'assistant', content: result?.content })
-    setUserInput('');
-    setPrompt(newMessages);
-    setIsLoading(true)
+  const handlePush = (path) => {
+    router.push(`${path}`);
   };
 
-  const scrollToBottom = () => {
-    if (chatDivRef.current) {
-      chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
+  const handleSignIn = () => {
+    if (userID) {
+      setCookieLogin(userID);
+      setTricker(true);
+      toast.success("Success");
+    } else {
+      toast("Please Enter ID", {
+        icon: "❌",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
     }
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [prompt]);
+    const cookieData = getCookieLogin();
+    if (cookieData !== undefined) {
+      setTricker(true);
+    }
+  }, []);
 
   return (
-    <div className="w-screen h-screen bg-[#2E2D2A]">
-      <div className="flex flex-col justify-between h-[100vh] items-center">
-          <div className={`flex justify-between w-full p-4`}>
-            <div className={`flex gap-4`}>
-              <Image src="/Images/logo.png" alt="My Logo" width={50} height={50} />
-              <div></div>
-            </div>
-            <div className={`flex justify-center items-center font-semibold text-xl text-white`}>AAPICO - ARTIFICIAL INTELLIGENCE</div>
-            <div className={`flex gap-4`}>
-              <div className={`flex items-center justify-center`}
-              onClick={() => router.push('/adminAI') }
-              >
-              <div  
-              className="hover:shadow-md hover:shadow-orange-400 ease-linear  hover:cursor-pointer select-none rounded-2xl w-[80px] h-9 flex uppercase justify-center items-center bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg round ">
-                Upsert
-              </div>
-              </div>
-              <div className={` hover:cursor-pointer flex items-center justify-center `}
-              onClick={() => window.location.reload()}
-              >
-              <GrRefresh color="white" size={24} />
-              </div>
-            </div>
-          </div>
-          <div ref={chatDivRef} className={`flex flex-col items-start w-full overflow-y-auto h-full px-[15%] `}>
-            {/* Chat */}
-            {prompt.length === 0 &&
-            <>
-            <div className={`h-full w-full flex items-center pl-24 gap-24`}>
-            <motion.div
-                 
-                  animate={{
-                    scale: [1, 1.2, 1.5, 1.5, 1.2, 1],
-                    // rotate: [0, 0, 180, 180, 0],
-                    // borderRadius: ["0%", "0%", "50%", "50%", "0%"]
-                  }}
-                  transition={{
-                    duration: 2,
-                    ease: "easeInOut",
-                    times: [0, 0.2, 0.5, 0.8, 1],
-                    repeat: Infinity,
-                    repeatDelay: 1
-                  }}
-                  >
-                    <RiRobot2Line color="white" size={180}/>
-                  </motion.div>
-                  <div>
-                    <p className={`bg-gradient-to-r from-amber-500 to-pink-500 text-transparent bg-clip-text text-[60px] font-semibold`}>Hello there! </p>
-                    <p className={`text-[30px] text-white`}>How can I help you today?</p>
-                  </div>
-            </div>
-            </>
-            }
-            {prompt.map((message, index) => (
-            <>
-            {/* {console.log("message",message)} */}
-            {message.role === "user"
-            ?
-            <div key={index} className={`bg-[#201F1B] mt-4 p-4 rounded-xl flex gap-4`}>
-              <div className={`flex items-center justify-center`}>
-                <ImUser color="white" size={28}/>
-              </div>
-              <div className={`text-white`}>
-                {message.content}
-              </div>
-            </div>
-            :
-            <div key={index} className={`bg-[#201F1B] mt-4 p-4 rounded-xl flex gap-4`}>
-              <div className={`flex items-center justify-center`}>
-                <BsRobot size={28} color={`blue`} />
-              </div>
-              <div className={`text-white`}>
-                {message.content}
-              </div>
-            </div>
-            }
-            {/* <div key={index} className={`bg-[#201F1B] mt-4 p-4 rounded-xl flex gap-4`}>
-              <div className={`flex items-center justify-center`}>
-                <ImUser size={28}/>
-              </div>
-              <div>
-                {message.content}
-              </div>
-            </div> */}
-            </>
-            ))}
-            {!isLoading && 
-            <div className={`bg-[#201F1B] mt-4 p-4 rounded-xl flex gap-4 w-full blur-[1px]`}>
-              <div className="flex w-full flex-col gap-4 ">
-                <div className="flex items-center gap-4">
-                  <div className="skeleton h-16 w-16 shrink-0 rounded-full bg-[#CBCFC3]"></div>
-                  <div className="flex flex-col gap-4 w-full">
-                    <div className="skeleton h-4 w-20 bg-[#CBCFC3]"></div>
-                    <div className="skeleton h-4 w-[40%] bg-[#CBCFC3]"></div>
-                    <div className="skeleton h-4 w-[60%] bg-[#CBCFC3]"></div>
-                    {/* <div className="skeleton h-4 w-[70%] bg-[#CBCFC3]"></div>
-                    <div className="skeleton h-4 w-[90%] bg-[#CBCFC3]"></div> */}
-                  </div>
+    <>
+      <div className={`h-screen w-screen overflow-hidden -z-10`}>
+        <MatrixRainingCode className={`absolute inset-0 -z-10`} />
+        <div className='flex flex-col items-center justify-center min-h-screen text-white p-4'>
+          <div
+            className={`w-[500px] h-auto p-5 backdrop-filter border-2 border-gray-700 backdrop-blur-sm rounded-lg`}>
+            {tricker ? (
+              <div
+                className={`flex flex-col items-center justify-center rounded-3xl w-full h-full `}>
+                <h1 className={`text-4xl font-bold p-3`}>
+                  Welcome to the Quiz
+                </h1>
+                <h1 className={`text-4xl font-bold mb-6 p-3`}>
+                  Gen-AI Workshop
+                </h1>
+                <div className='flex-col w-full space-y-5 p-5'>
+                  <button
+                    className={`bg-[#010029] text-white py-4 px-8 text-md font-bold rounded-xl relative before:block before:w-full before:h-full before:absolute before:top-0 before:left-0 before:bg-gradient-to-br before:from-[#1E96FC] before:to-[#A2D6F9] before:-z-10 before:scale-105 before:rounded-xl hover:z-0 hover:shadow-xl hover:shadow-[#072AC8] hover:text-black transition-all ease-in-out w-full uppercase`}
+                    onClick={() => handlePush("beginner-quiz")}>
+                    Beginner Quiz
+                  </button>
+                  <button
+                    className='bg-[#010029] text-white py-4 px-8 text-md font-bold rounded-xl relative before:block before:w-full before:h-full before:absolute before:top-0 before:left-0 before:bg-gradient-to-br before:from-red-500 before:to-orange-500 before:-z-10 before:scale-105 before:rounded-xl hover:z-0 hover:shadow-xl hover:shadow-red-600 hover:text-black transition-all ease-in-out w-full uppercase'
+                    onClick={() => handlePush("advanced-quiz")}>
+                    Advanced Quiz
+                  </button>
+                  <button
+                    className='bg-[#010029] text-white py-4 px-8 text-md font-bold rounded-xl relative before:block before:w-full before:h-full before:absolute before:top-0 before:left-0 before:bg-gradient-to-br before:from-purple-500 before:to-indigo-500 before:-z-10 before:scale-105 before:rounded-xl hover:z-0 hover:shadow-xl hover:shadow-purple-600 hover:text-black transition-all ease-in-out w-full uppercase'
+                    onClick={() => handlePush("workshop")}>
+                    Workshop
+                  </button>
+                  <button
+                    className='bg-[#010029] text-white py-4 px-8 text-md font-bold rounded-xl relative before:block before:w-full before:h-full before:absolute before:top-0 before:left-0 before:bg-gradient-to-br before:from-purple-500 before:to-indigo-500 before:-z-10 before:scale-105 before:rounded-xl hover:z-0 hover:shadow-xl hover:shadow-purple-600 hover:text-black transition-all ease-in-out w-full uppercase'
+                    onClick={() => handlePush("dashboard")}>
+                    Dashboard
+                  </button>
                 </div>
               </div>
-            </div>
-            }
-
-            {/* <div className={`bg-gray-900 mt-4 p-4 rounded-xl flex gap-4`}>
-              <div className={`flex items-center justify-center`}>
-              <BsRobot size={28} color={`blue`} />
+            ) : (
+              <div
+                className={`p-10 gap-10 flex flex-col items-center justify-center rounded-3xl w-full h-full backdrop-filter backdrop-blur-sm`}>
+                <h1 className={`text-4xl font-bold mb-6`}>
+                  Welcome to the Quiz
+                </h1>
+                <label className='input input-bordered border-green-400 flex items-center gap-2 w-full p-7 bg-[#1D232A] text-white'>
+                  ID :
+                  <input
+                    type='url'
+                    className='grow uppercase pl-1'
+                    value={userID}
+                    onChange={(e) => setUserID(e.target.value)}
+                    placeholder='AH1000xxxx'
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        handleSignIn();
+                      }
+                    }}
+                  />
+                </label>
+                <div className='flex gap-16 w-full'>
+                  <button
+                    className={`bg-black text-white py-4 px-8 text-md font-bold rounded-xl relative before:block before:w-full before:h-full before:absolute before:top-0 before:left-0 before:bg-gradient-to-br before:from-green-400 before:to-emerald-900 before:-z-10 before:scale-105 before:rounded-xl hover:z-0 hover:shadow-xl hover:shadow-emerald-500 hover:text-white transition-all ease-in-out w-full uppercase`}
+                    onClick={() => handleSignIn()}>
+                    Sign IN
+                  </button>
+                </div>
               </div>
-              <div>
-                
-              </div>
-            </div> */}
-
+            )}
           </div>
-          <div className={`p-[4px]`}></div>
-          <div className={`px-[15%] w-full `}>
-            <div className={`w-full h-[80px] backdrop-blur-sm bg-[#21201C] p-2 rounded-full flex justify-between items-center`}>
-              <div className={`pl-4 w-full`}>
-                <input type="text" 
-                disabled={!isLoading}
-                placeholder="What's on your mind ? " 
-                className={`w-full h-10 outline-none bg-transparent text-white`} 
-                value={userInput}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && userInput  !== "") {
-                  handleSubmit();
-                  }
-                }}
-                onChange={(event) => {
-                  setUserInput(event.target.value);
-                }}
-                />
-              </div>
-              
-              {/* {prompt} */}
-              {
-                userInput ?
-                <button 
-                className={` rounded-full bg-[#676767] w-[60px] h-[60px] flex justify-center items-center ${isLoading?"border hover:cursor-pointer ":"border border-red-600"}  `}
-                onClick={handleSubmit}
-                disabled={!isLoading}
-                >
-                  {isLoading
-                  ?<GoArrowUp size={28} /> 
-                  :
-                  <motion.div
-                  animate={{
-                    scale: [1, 1.2, 1.2, 1, 1],
-                    rotate: [0, 0, 180, 180, 0],
-                    borderRadius: ["0%", "0%", "50%", "50%", "0%"]
-                  }}
-                  transition={{
-                    duration: 2,
-                    ease: "easeInOut",
-                    times: [0, 0.2, 0.5, 0.8, 1],
-                    repeat: Infinity,
-                    repeatDelay: 1
-                  }}
-                  >
-                    <FaStop color="red" size={28}/>
-                  </motion.div>
-                  }
-                </button>
-                :
-                ""
-              }
-              
-            </div>
-          </div>
-          <div className={`p-2`}>
-          </div>
+        </div>
       </div>
-    </div>
-  )
-}
+    </>
+  );
+};
 
-export default Home
+export default QuizPage;

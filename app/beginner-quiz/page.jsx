@@ -1,19 +1,19 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import beginnerQuizData from "./beginnerQuizData";
-import ti18n from '../i18n'
+import ti18n from "../i18n";
 import { submitQuiz } from "@/services/api";
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import MatrixRainingCode from "app/bg";
 
 function BeginnerQuiz() {
   dayjs.extend(utc);
-  dayjs.extend(timezone); 
+  dayjs.extend(timezone);
   const { t, i18n } = useTranslation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentQuestionText, setCurrentQuestionText] = useState(0);
@@ -27,21 +27,35 @@ function BeginnerQuiz() {
   const questions = data.questions || [];
   const correctAnswers = questions.map((q) => q.answer || 0);
   const correctAnswersText = questions.map((q) => q.options || 0);
-  const timestamp = dayjs().tz('Asia/Bangkok');
-  
+  const timestamp = dayjs().tz("Asia/Bangkok");
+
   const handleAnswer = async (index) => {
     setSelectedAnswer(index);
-    const _timestamp = timestamp.format()
-    const _question = currentQuestion
-    const _correctAnswers = correctAnswers[currentQuestion]
-    const _answer = index
-    const _type = "beginner"
+    const _timestamp = timestamp.format();
+    const _question = currentQuestion;
+    const _correctAnswers = correctAnswers[currentQuestion];
+    const _answer = index;
+    const _type = "beginner";
     if (index === correctAnswers[currentQuestion]) {
-      await submitQuiz(true,_question,_correctAnswers,_answer,_timestamp,_type)
+      await submitQuiz(
+        true,
+        _question,
+        _correctAnswers,
+        _answer,
+        _timestamp,
+        _type
+      );
       toast.success(t("Correct!"));
       setScore(score + 1);
     } else {
-      await submitQuiz(false,_question,_correctAnswers,_answer,_timestamp,_type)
+      await submitQuiz(
+        false,
+        _question,
+        _correctAnswers,
+        _answer,
+        _timestamp,
+        _type
+      );
       toast.error(t("Incorrect!"));
     }
     setShowNext(true);
@@ -61,7 +75,7 @@ function BeginnerQuiz() {
   };
 
   const handleLanguageChange = (lng) => {
-    ti18n.changeLanguage(lng)// Ensure i18n is correctly initialized
+    ti18n.changeLanguage(lng); // Ensure i18n is correctly initialized
   };
 
   const getUserLevel = (score, totalQuestions) => {
@@ -73,8 +87,10 @@ function BeginnerQuiz() {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4 font-kanit'>
+    <div className='flex flex-col items-center justify-center min-h-screen text-white p-4 font-kanit'>
       <ToastContainer />
+
+      <MatrixRainingCode className={`absolute inset-0 -z-10`} />
       <div className='bg-gray-800 shadow-lg rounded-lg p-8 max-w-xl w-full'>
         <div className='flex justify-between mb-6'>
           <div className='flex space-x-4 mb-4'>
